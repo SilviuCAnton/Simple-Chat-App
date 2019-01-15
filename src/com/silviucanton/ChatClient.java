@@ -27,12 +27,25 @@ public class ChatClient {
 	}
 	
 	private void setUpNetworking() {
-		
+		try {
+			sock = new Socket("192.168.56.1", 5000);
+			writer = new PrintWriter(sock.getOutputStream());
+			System.out.println("Networking established...");
+		} catch(IOException ex) {
+			ex.printStackTrace();
+		}
 	}
 	
 	public class MySendActionListener implements ActionListener {
 		public void actionPerformed(ActionEvent a) {
-			
+			try {
+				writer.println(outgoing.getText());
+				writer.flush();
+			} catch(Exception ex) {
+				ex.printStackTrace();
+			}
+			outgoing.setText("");
+			outgoing.requestFocus();
 		}
 	}
 	
