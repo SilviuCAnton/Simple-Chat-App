@@ -6,7 +6,7 @@ import java.util.*;
 
 public class ChatServer {
 	
-	ArrayList clientOutputStreams;
+	ArrayList<PrintWriter> clientOutputStreams;
 	
 	public class ClientHandler implements Runnable {
 		BufferedReader reader;
@@ -26,7 +26,7 @@ public class ChatServer {
 			String message;
 			try {
 				while((message = reader.readLine()) != null) {
-					System.out.println("read" + message);
+					System.out.println("read " + message);
 					tellEveryone(message);
 				} 
 			} catch(Exception ex) {
@@ -40,7 +40,7 @@ public class ChatServer {
 	}
 	
 	public void go() {
-		clientOutputStreams = new ArrayList();
+		clientOutputStreams = new ArrayList<PrintWriter>();
 		try {
 			ServerSocket serverSock = new ServerSocket(5000);
 			
@@ -59,7 +59,7 @@ public class ChatServer {
 	}
 	
 	public void tellEveryone(String message) {
-		 Iterator it = clientOutputStreams.iterator();
+		 Iterator<PrintWriter> it = clientOutputStreams.iterator();
 		 while(it.hasNext()) {
 			 try {
 				 PrintWriter writer = (PrintWriter) it.next();

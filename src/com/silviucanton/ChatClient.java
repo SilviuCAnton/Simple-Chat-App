@@ -3,7 +3,7 @@ package com.silviucanton;
 import java.io.*;
 import java.net.*;
 import javax.swing.*;
-import java.util.*;
+import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -23,6 +23,8 @@ public class ChatClient {
 		incoming.setLineWrap(true);
 		incoming.setWrapStyleWord(true);
 		incoming.setEditable(false);
+		DefaultCaret caret =(DefaultCaret) incoming.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		JScrollPane qscroller = new JScrollPane(incoming);
 		qscroller.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		qscroller.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -38,13 +40,15 @@ public class ChatClient {
 		readerThread.start();
 		
 		frame.getContentPane().add(BorderLayout.CENTER, mainPanel);
-		frame.setSize(400, 500);
+		frame.setSize(800, 500);
 		frame.setVisible(true);
 	}
 	
 	private void setUpNetworking() {
 		try {
 			sock = new Socket("192.168.56.1", 5000);
+			InputStreamReader streamReader = new InputStreamReader(sock.getInputStream());
+			reader = new BufferedReader(streamReader);
 			writer = new PrintWriter(sock.getOutputStream());
 			System.out.println("Networking established...");
 		} catch(IOException ex) {
@@ -71,7 +75,7 @@ public class ChatClient {
 			try {
 				
 				while((message = reader.readLine()) != null) {
-					System.out.println("read" + message);
+					System.out.println("read " + message);
 					incoming.append(message + "\n");
 				}
 			} catch(Exception ex) {
@@ -81,7 +85,8 @@ public class ChatClient {
 	}
 	
 	public static void main(String[] args) {
-		new ChatClient().go();
+		ChatClient client = new ChatClient();
+		client.go();
 	}
 
 }
